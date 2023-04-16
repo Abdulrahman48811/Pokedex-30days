@@ -18,8 +18,15 @@ const addCard = (pokemon) => {
   const image = newCard.querySelector("img");
   image.src = pokemon.sprites.front_default;
 
-  newCard.id = pokemon.id;
+  const typesDiv = newCard.querySelector(".types");
+  const types = pokemon.types.map((type) => type.type.name);
+  typesDiv.innerText = types.join(", ");
+
+  const weightDiv = newCard.querySelector(".weight");
+  weightDiv.innerText = `${pokemon.weight} kg`;
+
   newCard.onclick = () => showModal(pokemon.id);
+  newCard.id = pokemon.id;
 
   flexContainer.appendChild(newCard);
 };
