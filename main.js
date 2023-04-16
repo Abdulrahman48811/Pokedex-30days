@@ -19,9 +19,11 @@ const addCard = (pokemon) => {
   image.src = pokemon.sprites.front_default;
 
   newCard.id = pokemon.id;
+  newCard.onclick = () => showModal(pokemon.id);
 
   flexContainer.appendChild(newCard);
 };
+
 const getPokemonList = () => {
   console.time("timer");
   fetch(`${baseAPI}pokemon?limit=20&offset=${page * 20}`)
@@ -46,6 +48,7 @@ const getPokemonList = () => {
       placeholder.classList.add("hidden");
     });
 };
+
 const nextPage = () => {
   showAndMovePlaceholder();
   placeholder.classList.remove("hidden");
@@ -58,4 +61,21 @@ const showAndMovePlaceholder = () => {
   placeholder.remove();
   flexContainer.appendChild(placeholder);
 };
+
+const showModal = (pokemonId) => {
+  const foundPokemon = pokemonArray.find((p) => p.id === pokemonId);
+
+  modalTitle.innerText = foundPokemon.name;
+  modalImage.src = foundPokemon.sprites.front_default;
+
+  modalBackdrop.classList.remove("hidden");
+};
+
+const dismissModal = (e) => {
+  if (e.currentTarget === e.target) {
+    modalBackdrop.classList.add("hidden");
+  }
+};
+
+modalBackdrop.onclick = dismissModal;
 getPokemonList();
