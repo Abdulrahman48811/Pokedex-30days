@@ -2,9 +2,21 @@ const baseAPI = "https://pokeapi.co/api/v2/";
 const flexContainer = document.getElementById("flex-container");
 const placeholder = document.getElementById("placeholder");
 const totalPokemon = document.getElementById("total-pokemon");
+const modalBackdrop = document.getElementById("backdrop");
+const modalTitle = document.getElementById("modal-title");
+const modalImage = document.getElementById("modal-image");
 
 let page = 0;
 let pokemonArray = [];
+
+const showModal = (pokemonId) => {
+  const foundPokemon = pokemonArray.find((p) => p.id === pokemonId);
+
+  modalTitle.innerText = foundPokemon.name;
+  modalImage.src = foundPokemon.sprites.front_default;
+
+  modalBackdrop.classList.remove("hidden");
+};
 
 const addCard = (pokemon) => {
   const newCard = placeholder.cloneNode(true);
@@ -25,14 +37,14 @@ const addCard = (pokemon) => {
   const weightDiv = newCard.querySelector(".weight");
   weightDiv.innerText = `${pokemon.weight} kg`;
 
-  newCard.onclick = () => showModal(pokemon.id);
   newCard.id = pokemon.id;
+
+  newCard.onclick = () => showModal(pokemon.id);
 
   flexContainer.appendChild(newCard);
 };
 
 const getPokemonList = () => {
-  console.time("timer");
   fetch(`${baseAPI}pokemon?limit=20&offset=${page * 20}`)
     .then((res) => res.json())
     .then((data) => {
@@ -43,7 +55,6 @@ const getPokemonList = () => {
           .then((res) => res.json())
           .then((data) => {
             pokemonArray.push(data);
-
             console.log(pokemonArray);
             addCard(data);
           });
@@ -56,33 +67,26 @@ const getPokemonList = () => {
     });
 };
 
-const nextPage = () => {
-  showAndMovePlaceholder();
-  placeholder.classList.remove("hidden");
-  page++;
-  getPokemonList();
-  totalPokemon.innerText = (page + 1) * 20;
-};
 const showAndMovePlaceholder = () => {
   placeholder.classList.remove("hidden");
   placeholder.remove();
   flexContainer.appendChild(placeholder);
 };
 
-const showModal = (pokemonId) => {
-  const foundPokemon = pokemonArray.find((p) => p.id === pokemonId);
-
-  modalTitle.innerText = foundPokemon.name;
-  modalImage.src = foundPokemon.sprites.front_default;
-
-  modalBackdrop.classList.remove("hidden");
+const nextPage = () => {
+  showAndMovePlaceholder();
+  page++;
+  getPokemonList();
+  totalPokemon.innerText = (page + 1) * 20;
 };
 
 const dismissModal = (e) => {
+  console.log("here");
   if (e.currentTarget === e.target) {
     modalBackdrop.classList.add("hidden");
   }
 };
 
 modalBackdrop.onclick = dismissModal;
+
 getPokemonList();
