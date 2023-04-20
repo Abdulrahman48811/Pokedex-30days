@@ -15,7 +15,7 @@ const showModal = (pokemonId) => {
 
   modalTitle.innerText = foundPokemon.name;
   modalImage.src = foundPokemon.sprites.front_default;
-  renderChart();
+  renderChart(foundPokemon);
 
   modalBackdrop.classList.remove("hidden");
 };
@@ -69,16 +69,17 @@ const getPokemonList = () => {
     });
 };
 
-const renderChart = () => {
+const renderChart = (pokemon) => {
   const chartCanvas = document.getElementById("statsChart");
+  const data = pokemon.stats.map((stat) => stat.base_stat);
   currentChart = new Chart(chartCanvas, {
     type: "bar",
     data: {
-      labels: ["HP", "Attack", "Defense", "Special A", "Special D", "Speed"],
+      labels: statsData.names,
       datasets: [
         {
-          label: "Value",
-          data: [59, 63, 80, 65, 80, 58],
+          label: pokemon.name,
+          data: statsData.values,
           borderWidth: 1,
         },
       ],
@@ -111,6 +112,16 @@ const nextPage = () => {
   getPokemonList();
   totalPokemon.innerText = (page + 1) * 20;
 };
+const statsData = pokemon.stats.reduce(
+  (accumulator, stat) => {
+    accumulator.names.push(stat.stat.name);
+    accumulator.values.push(stat.base_stat);
+    return accumulator;
+  },
+  { names: [], values: [] }
+);
+
+console.log(statsData);
 
 const dismissModal = (e) => {
   console.log("here");
