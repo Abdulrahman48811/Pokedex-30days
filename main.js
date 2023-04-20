@@ -8,12 +8,14 @@ const modalImage = document.getElementById("modal-image");
 
 let page = 0;
 let pokemonArray = [];
+let currentChart;
 
 const showModal = (pokemonId) => {
   const foundPokemon = pokemonArray.find((p) => p.id === pokemonId);
 
   modalTitle.innerText = foundPokemon.name;
   modalImage.src = foundPokemon.sprites.front_default;
+  renderChart();
 
   modalBackdrop.classList.remove("hidden");
 };
@@ -67,6 +69,36 @@ const getPokemonList = () => {
     });
 };
 
+const renderChart = () => {
+  const chartCanvas = document.getElementById("statsChart");
+  currentChart = new Chart(chartCanvas, {
+    type: "bar",
+    data: {
+      labels: ["HP", "Attack", "Defense", "Special A", "Special D", "Speed"],
+      datasets: [
+        {
+          label: "Value",
+          data: [59, 63, 80, 65, 80, 58],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          display: true,
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 255,
+        },
+      },
+    },
+  });
+};
+
 const showAndMovePlaceholder = () => {
   placeholder.classList.remove("hidden");
   placeholder.remove();
@@ -84,6 +116,7 @@ const dismissModal = (e) => {
   console.log("here");
   if (e.currentTarget === e.target) {
     modalBackdrop.classList.add("hidden");
+    currentChart.destroy();
   }
 };
 
