@@ -10,6 +10,15 @@ let page = 0;
 let pokemonArray = [];
 let currentChart;
 
+const POKEMON_STATS = {
+    hp: "HP",
+    attack: "Attack",
+    defense: "Defense",
+    "special-attack": "Special Attach",
+    "special-defense": "Special Defense",
+    speed: "Speed",
+  };
+
 const showModal = (pokemonId) => {
   const foundPokemon = pokemonArray.find((p) => p.id === pokemonId);
 
@@ -112,16 +121,16 @@ const nextPage = () => {
   getPokemonList();
   totalPokemon.innerText = (page + 1) * 20;
 };
-const statsData = pokemon.stats.reduce(
-  (accumulator, stat) => {
-    accumulator.names.push(stat.stat.name);
-    accumulator.values.push(stat.base_stat);
-    return accumulator;
-  },
-  { names: [], values: [] }
-);
 
-console.log(statsData);
+
+const statsData = pokemon.stats.reduce(
+    (accumulator, stat) => {
+      accumulator.names.push(POKEMON_STATS[stat.stat.name]);
+      accumulator.values.push(stat.base_stat);
+      return accumulator;
+    },
+    { names: [], values: [] }
+  );
 
 const dismissModal = (e) => {
   console.log("here");
